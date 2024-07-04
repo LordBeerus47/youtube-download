@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, send_file, redirect, url_for
-
+from flask import Flask, render_template, request, send_file, redirect, url_for, flash
 from pytube import YouTube
 import os
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Required for flash messages
 
 # Define the path to the downloads folder
 DOWNLOADS_FOLDER = os.path.join(os.path.dirname(__file__), 'downloads')
@@ -27,11 +27,16 @@ def download():
     try:
         yt = YouTube(url)
         stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
-        download_path = f"downloads/{yt.title}.mp4"
-        stream.download(output_path='downloads/', filename=f"{yt.title}.mp4")
-        return send_file(download_path, as_attachment=True)
+        if stream:
+            download_path = f"downloads/{yt.title}.mp4"
+            stream.download(output_path='downloads/', filename=f"{yt.title}.mp4")
+            return send_file(download_path, as_attachment=True)
+        else:
+            flash('The provided YouTube link is not compatible for download.', 'error')
+            return redirect(url_for('home'))
     except Exception as e:
         print(e)
+        flash('Error processing the YouTube link.', 'error')
         return redirect(url_for('home'))
 
 @app.route('/overview')
@@ -41,8 +46,12 @@ def overview():
 
 @app.route('/remove/<title>')
 def remove_video(title):
-    os.remove(f"downloads/{title}.mp4")
-    
+    try:
+        os.remove(f"downloads/{title}.mp4")
+        flash(f'Video "{title}" has been removed.', 'success')
+    except Exception as e:
+        print(e)
+        flash(f'Error removing video "{title}".', 'error')
     return redirect(url_for('overview'))
 
 @app.route('/download_again/<title>')

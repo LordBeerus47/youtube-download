@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10-slim
+FROM python:3.10
 
 # Set the working directory in the container
 WORKDIR /app
@@ -19,4 +19,4 @@ ENV FLASK_APP=app.py
 
 # Run Gunicorn when the container launches
 CMD ["gunicorn", "-w", "3", "--bind", "0.0.0.0:5000", "app:app"]
-#CMD ["flask", "run", "--host=0.0.0.0"]
+#CMD ["flask", "run"]
