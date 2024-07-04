@@ -9,7 +9,6 @@ COPY . .
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install gunicorn
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
@@ -19,4 +18,4 @@ ENV FLASK_APP=app.py
 
 # Run Gunicorn when the container launches
 CMD ["gunicorn", "-w", "3", "--bind", "0.0.0.0:5000", "app:app"]
-#CMD ["flask", "run"]
+#CMD ["python", "app.py"]
