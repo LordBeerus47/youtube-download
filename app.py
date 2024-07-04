@@ -8,9 +8,6 @@ app = Flask(__name__)
 # Define the path to the downloads folder
 DOWNLOADS_FOLDER = os.path.join(os.path.dirname(__file__), 'downloads')
 
-# List to keep track of downloaded videos
-downloaded_videos = []
-
 # Function to get list of downloaded videos
 def get_downloaded_videos():
     videos = []
@@ -32,7 +29,6 @@ def download():
         stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
         download_path = f"downloads/{yt.title}.mp4"
         stream.download(output_path='downloads/', filename=f"{yt.title}.mp4")
-        downloaded_videos.append({'title': yt.title, 'path': download_path})
         return send_file(download_path, as_attachment=True)
     except Exception as e:
         print(e)
@@ -56,4 +52,4 @@ def download_again(title):
 if __name__ == '__main__':
     if not os.path.exists('downloads'):
         os.makedirs('downloads')
-    app.run(debug=True)
+    app.run()
