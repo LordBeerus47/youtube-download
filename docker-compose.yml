@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000"  # Map host port 5000 to container port 5000
+    volumes:
+      - .:/app
+
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "3654:3654"  # Map host port 3654 to NGINX container port 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
