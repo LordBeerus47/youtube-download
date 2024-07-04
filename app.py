@@ -24,20 +24,16 @@ def home():
 @app.route('/download', methods=['POST'])
 def download():
     url = request.form['url']
-    try:
-        yt = YouTube(url)
-        stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
-        if stream:
-            download_path = f"downloads/{yt.title}.mp4"
-            stream.download(output_path='downloads/', filename=f"{yt.title}.mp4")
-            return send_file(download_path, as_attachment=True)
-        else:
-            flash('The provided YouTube link is not compatible for download.', 'error')
-            return redirect(url_for('home'))
-    except Exception as e:
-        print(e)
-        flash('Error processing the YouTube link.', 'error')
+    yt = YouTube(url)
+    stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
+    if stream:
+        download_path = f"downloads/{yt.title}.mp4"
+        stream.download(output_path='downloads/', filename=f"{yt.title}.mp4")
+        return send_file(download_path, as_attachment=True)
+    else:
+        flash('The provided YouTube link is not compatible for download.', 'error')
         return redirect(url_for('home'))
+    
 
 @app.route('/overview')
 def overview():
