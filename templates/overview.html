@@ -2,23 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Downloaded Videos Overview</title>
+    <title>Downloaded Videos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container mt-5">
         <h1>Downloaded Videos</h1>
-        <ul>
-            {% for video in videos %}
-                <li>
-                    {{ video['title'] }}
-                    - <a href="{{ url_for('remove_video', title=video['title']) }}">Remove</a>
-                    - <a href="{{ url_for('download_again', title=video['title']) }}">Download Again</a>
-                </li>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
             {% endfor %}
-        </ul>
-        <p><a href="{{ url_for('home') }}">Back to Download Page</a></p>
+        {% endif %}
+    {% endwith %}
+        
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{ used_percentage }}%;" aria-valuenow="{{ used_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ used_percentage | round(2) }}%</div>
+        </div>
+        <p>{{ used_space | round(2) }} GB used out of {{ total_space }} GB</p>
+
+        {% if mp4_files %}
+            <h2>MP4 Files</h2>
+            <ul>
+                {% for file in mp4_files %}
+                    <li>
+                        {{ file }}
+                        - <a href="{{ url_for('remove_video', title=file) }}" >Remove</a>
+                        - <a href="{{ url_for('download_again', title=file) }}" >Download Again</a>
+                        - <a href="{{ url_for('view_video', title=file) }}" >View</a>
+                        
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if mp3_files %}
+            <h2>MP3 Files</h2>
+            <ul>
+                {% for file in mp3_files %}
+                    <li>
+                        {{ file }}
+                        - <a href="{{ url_for('remove_video', title=file) }}" >Remove</a>
+                        - <a href="{{ url_for('download_again', title=file) }}" >Download Again</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Back</a>
     </div>
 </body>
 </html>

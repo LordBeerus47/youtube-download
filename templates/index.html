@@ -2,30 +2,66 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>YouTube Video Downloader</title>
+    <title>YouTube Downloader</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script>
+        function toggleQualityOptions() {
+            var formatSelect = document.getElementById('format');
+            var qualityLabel = document.getElementById('quality-label');
+            var qualitySelect = document.getElementById('quality');
+
+            if (formatSelect.value === 'mp4') {
+                qualityLabel.style.display = 'inline';
+                qualitySelect.style.display = 'inline';
+            } else {
+                qualityLabel.style.display = 'none';
+                qualitySelect.style.display = 'none';
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container mt-5">
-        <h1>YouTube Video Downloader</h1>
-        
+        <h1>Download YouTube Video</h1>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
         <form action="{{ url_for('download') }}" method="post">
             <input type="text" name="url" placeholder="Enter YouTube URL" required>
             <button type="submit" class="btn btn-primary">Download</button>
+            <br><br>
+            <label for="format">Choose format:</label>
+            <select name="format" id="format" onchange="toggleQualityOptions()">
+                <option value="mp4">MP4</option>
+                <option value="mp3">MP3</option>
+            </select>
+            <label for="quality" id="quality-label">Choose quality:</label>
+            <select name="quality" id="quality">
+                <!--<option value="144p">144p</option> -->
+                <!--<option value="240p">240p</option> -->
+                <option value="360p">360p</option> 
+                <!--<option value="480p">480p</option> -->
+                <!--<option value="720p60">720p</option> --> 
+                <!--<option value="1080p60">1080p</option> --> 
+            </select>
+            <label for="download_option">Download option:</label>
+            <select name="download_option" id="download_option">
+                <option value="client">Download to client</option>
+                <option value="server">Download on server</option>
+            </select>
+            
         </form>
-        
         <br>
-        <a href="{{ url_for('overview') }}" class="btn btn-info">View Downloaded Videos</a>
+        <a href="{{ url_for('overview') }}" s>View Downloads</a>
     </div>
 </body>
 </html>

@@ -1,4 +1,5 @@
 Flask
 pytube
 gunicorn
-werkzeug  # or a specific version that supports `url_quote`
+werkzeug
+moviepy
